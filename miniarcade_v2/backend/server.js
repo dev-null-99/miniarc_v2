@@ -7,12 +7,16 @@ const rateLimit = require('express-rate-limit')
 dotenv.config()
 const app = express()
 
+// ── Rate Limiter / Proxy Fix (For Render) ──
+// Ye line add karni bohot zaroori thi, iske bina 500 error aayega
+app.set('trust proxy', 1) 
+
 // ── Security ──
 app.use(helmet())
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://miniarcd.netlify.app', // ← tumhara Netlify URL
+    'https://miniarcd.netlify.app', // Yahan last wala '/' hata diya, wo CORS fail karata hai
   ],
   credentials: true,
 }))
