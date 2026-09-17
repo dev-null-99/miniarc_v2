@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000',
+  // baseURL ko humne permanently tumhare Render API par point kar diya hai
+  baseURL: 'https://miniarc-v2.onrender.com',
 })
 
 API.interceptors.request.use((config) => {
