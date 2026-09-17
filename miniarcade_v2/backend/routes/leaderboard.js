@@ -10,13 +10,14 @@ router.get('/:game_slug', async (req, res) => {
     const [rows] = await db.query(`
       SELECT 
         u.username, 
-        l.best_score, 
-        l.updated_at
-      FROM leaderboard l
-      JOIN users u ON l.user_id = u.user_id
-      JOIN games g ON l.game_id = g.game_id
+        MAX(s.score) as best_score, 
+        MAX(s.created_at) as updated_at
+      FROM scores s
+      JOIN users u ON s.user_id = u.user_id
+      JOIN games g ON s.game_id = g.game_id
       WHERE g.game_slug = ?
-      ORDER BY l.best_score DESC
+      GROUP BY u.user_id, u.username
+      ORDER BY best_score DESC
       LIMIT 10
     `, [game_slug])
     
