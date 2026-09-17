@@ -1,20 +1,33 @@
 const mysql  = require('mysql2')
 require('dotenv').config()
 
-const pool = mysql.createPool({
-  host:             process.env.DB_HOST,
-  port:             process.env.DB_PORT || 3306,
-  user:             process.env.DB_USER,
-  password:         process.env.DB_PASSWORD,
-  database:         process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit:  10,
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-})
+// Agar Render par DATABASE_URL maujood hai, toh wo use karo, warna local DB variables
+const dbConfig = process.env.DATABASE_URL
+  ? {
+      uri: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }, // Aiven ke liye SSL force karna zaroori hai
+      waitForConnections: true,
+      connectionLimit: 10
+    }
+  : {
+      host:             process.env.DB_HOST,
+      port:             process.env.DB_PORT || 3306,
+      user:             process.env.DB_USER,
+      password:         process.env.DB_PASSWORD,
+      database:         process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit:  10,
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+    };
+
+const pool = mysql.createPool(dbConfig);
 
 pool.getConnection((err, conn) => {
   if (err) console.log('❌ DB Error:', err.message)
-  else { console.log('✅ MySQL Connected!'); conn.release() }
+  else { 
+    console.log('✅ MySQL Connected!'); 
+    conn.release() 
+  }
 })
 
 module.exports = pool.promise()
