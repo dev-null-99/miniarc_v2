@@ -10,7 +10,10 @@ const app = express()
 // ── Security ──
 app.use(helmet())
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:8080'],
+  origin: [
+    'http://localhost:5173',
+    'https://miniarcd.netlify.app', // ← tumhara Netlify URL
+  ],
   credentials: true,
 }))
 app.use(express.json())
